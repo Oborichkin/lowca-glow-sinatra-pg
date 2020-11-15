@@ -13,14 +13,13 @@ DB = Sequel.connect(
   host: "localhost",
   password: "password",
   user: "sinatra_admin",
-  max_connections: 10,
-  # logger: Logger.new('log/db.log')
+  max_connections: 10
 )
 
 %w{controllers models routes}.each { |dir| Dir.glob("./#{dir}/*.rb", &method(:require)) }
 
 before do
-  content_type "application/json" # Uncomment - To see perfectly in POSTMAN - in tab Pretty
+  content_type "application/json"
 end
 
 def collection_to_api(collection)
@@ -28,5 +27,5 @@ def collection_to_api(collection)
 end
 
 get "/" do
-  "Hi! I am api_sinatra_postgres!\n\n"
+  "{\"msg\": \"Hi! I am api_sinatra_postgres!\"}"
 end
