@@ -14,6 +14,11 @@ namespace '/api/v1' do
       job.values.to_json
     end
 
+    get '/job/:id/applies' do
+      applies = Apply.where(id: params[:id])
+      collection_to_api(applies)
+    end
+
     get '/jobs_company/:name' do
       company = Company.where(name: params[:name]).first
       halt(404, { message:'Company Document Not Found', status: 404, params_id: params[:id]}.to_json) unless company
@@ -27,10 +32,9 @@ namespace '/api/v1' do
     post '/job' do
       job = Job.new(request.params)
       halt(422, { message:'Unprocessible Entity', status: 422, params: request.params}.to_json) unless job
-      puts "json_params = ", request.params.to_json
       if job.save
         status 200
-        job.to_json
+        job.values.to_json
       else
         raise StandardError.new("In POST '/geeks' - Unprocessible Entity 422")
       end
@@ -39,10 +43,8 @@ namespace '/api/v1' do
     delete '/job/:id' do
       job = Job.where(id: params[:id]).first
       halt(404, { message:'Document Not Found', status: 404, params_id: params[:id]}.to_json) unless job
-      puts "job id = #{job.id.inspect} "
       if job.delete
         status 204
-        puts "Status = #{status} = deleted"
       else
         raise StandardError.new("In DELETE '/job/:id' - Unprocessible Entity 422")
       end

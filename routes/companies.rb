@@ -26,11 +26,28 @@ namespace "/api/v1" do
   end
 
   get "/company_jobs" do
-    Company.company_jobs(params[:name])
+    jobs = Company.company_jobs(params[:name])
   end
 
-  post "/companies" do
-    company = Company.create(params)
-    company.nil? ? [].to_json : company.values.to_json
+  post "/company" do
+    company = Company.new(request.params)
+    halt(422, { message:'Unprocessible Entity', status: 422, params: request.params}.to_json) unless company
+    if company.save
+      status 200
+      company.values.to_json
+    else
+      raise StandardError.new("In POST '/company' - Unprocessible Entity 422")
+    end
   end
+
+  delete '/company/:id' do
+    company = Company.where(id: params[:id]).first
+    halt(404, { message:'Document Not Found', status: 404, params_id: params[:id]}.to_json) unless company
+    if company.delete
+      status 204
+    else
+      raise StandardError.new("In DELETE '/company/:id' - Unprocessible Entity 422")
+    end
+  end
+
 end
