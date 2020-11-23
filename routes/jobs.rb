@@ -36,7 +36,7 @@ namespace '/api/v1' do
         status 200
         job.values.to_json
       else
-        raise StandardError.new("In POST '/geeks' - Unprocessible Entity 422")
+        raise StandardError.new("In POST '/job' - Unprocessible Entity 422")
       end
     end
 
